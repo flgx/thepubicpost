@@ -43,6 +43,33 @@
 
                 {!! Form::close() !!}
             </div>
+            
+            <!-- VideoPost Images -->
+            <div class="col-md-6">
+                <h1>Images</h1>
+                <hr>
+                @if(count($videopost->images) > 0)  
+                    <?php
+                        $i=0;
+                    ?>
+                    @foreach($videopost->images as $image)
+                    <div class="col-xs-12">
+                        <?php if($i==0){echo '<h1>Featured Image:</h1> <hr>';} ?>
+                        {{ HTML::image('img/videoposts/thumbs/thumb_'.$image->name, '$videopost->title') }}
+                        
+                        <p class="col-xs-12" style="padding-left:0px; margin-top:10px;">
+                            <a href="#" class="btn-delete btn btn-danger"  data-horse="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
+                        </p>
+                    </div>
+                    <hr>
+                    <?php $i++; ?>
+                    @endforeach
+                @else
+                    <p>Not images found. Please add a new image.</p>  
+                @endif      
+            </div>
+        </div>
+        <!-- /.row -->
         </div>
         <!-- /.row -->
 
