@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\TagRequest;
 use Laracasts\Flash\Flash;
 use App\Tag;
 use Auth;

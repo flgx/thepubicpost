@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\PostRequest;
 use Laracasts\Flash\Flash;
 use App\Post;
 use App\Tag;

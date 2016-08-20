@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\EbookRequest;
 use Laracasts\Flash\Flash;
-use willvincent\Feeds\Facades\FeedsFacade;
 use App\Ebook;
 use App\Tag;
 use App\Image;
@@ -62,25 +60,50 @@ class EbooksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EbookRequest $request)
+    public function store(Request $request)
     {
-        if($request->file('image')){
-            $file = $request->file('image');
-            $imagename = 'img_'. time() . '.' . $file->getClientOriginalExtension();
-            $path = public_path(). '/images/ebooks/';
-            $file->move($path,$imagename);            
+        $ebook = new Ebook($request->except('images','category_id','tags'));
+        $ebook->user_id = \Auth::user()->id;
+        $ebook->save();
+        //associate all tags for the post
+        $ebook->tags()->sync($request->tags);
+                $picture = '';
+        //associate category with post
+        $category = Category::find($request['category_id']);
+        $horse->category()->associate($category);
+
+        //Process images from the form
+        if ($request->hasFile('images')) {
+
+            $files = $request->file('images');
+
+            foreach($files as $file){
+                //image data
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $picture = date('His').'_'.$filename;
+                //make images sliders
+                $image=\Image::make($file->getRealPath()); //Call image library installed.
+                $destinationPath = public_path().'/img/ebooks/';
+                $image->resize(1300, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->save($destinationPath.'slider_'.$picture);
+                //make images thumbnails
+                $image2=\Image::make($file->getRealPath()); //Call image library installed.
+                $thumbPath = public_path().'/img/ebooks/thumbs/';
+                $image2->resize(null, 230, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image2->save($thumbPath.'thumb_'.$picture);
+                //save image information on the db.
+                $imageDb = new Image();
+                $imageDb->name = $picture;
+                $imageDb->horse()->associate($horse);
+                $imageDb->save();
+            }
         }
-        $Ebook = new Ebook($request->all());
-        $Ebook->user_id = \Auth::user()->id;
-        $Ebook->save();
-
-        $Ebook->tags()->sync($request->tags);
-
-        $image = new Image();
-        $image->name = $imagename;
-        $image->Ebook()->associate($Ebook); // Associate the recent Ebook id with the image.
-        $image->save();
-        Flash::success("Ebook <strong>".$Ebook->name."</strong> was created.");
+        Flash::success("Ebook <strong>".$ebook->title."</strong> was created.");
         return redirect()->route('admin.ebooks.index');
 
     }
@@ -93,9 +116,9 @@ class EbooksController extends Controller
      */
     public function show($id)
     {
-        $Ebook = Ebook::find($id);
+        $ebook = Ebook::find($id);
 
-        return view('admin.ebooks.show')->with('Ebook',$Ebook);
+        return view('admin.ebooks.show')->with('Ebook',$ebook);
     }
 
     /**
@@ -107,12 +130,16 @@ class EbooksController extends Controller
     public function edit($id)
     {          
         if(Auth::user()->type == 'admin'){
-            $Ebook = Ebook::find($id);
+            $ebook = Ebook::find($id);
             $categories = Category::orderBy('name','DESC')->lists('name','id');
             $tags = Tag::orderBy('name','DESC')->lists('name','id');
+            $images = new Image();
+            $ebook->images->each(function($ebook){
+            $ebook->images;
 
-            $myTags = $Ebook->tags->lists('id')->ToArray(); //give me a array with only the tags id.
-            return View('admin.ebooks.edit')->with('Ebook',$Ebook)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
+            });
+            $myTags = $ebook->tags->lists('id')->ToArray(); //give me a array with only the tags id.
+            return View('admin.ebooks.edit')->with('ebook',$ebook)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
         }else{
             return redirect()->route('admin.dashboard.index');
         }
@@ -128,15 +155,15 @@ class EbooksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $Ebook =Ebook::find($id);
-        $Ebook->fill($request->all());
-        $Ebook->user_id = \Auth::user()->id;
-        $Ebook->save();
+        $ebook =Ebook::find($id);
+        $ebook->fill($request->all());
+        $ebook->user_id = \Auth::user()->id;
+        $ebook->save();
 
-        $Ebook->tags()->sync($request->tags);
+        $ebook->tags()->sync($request->tags);
 
       
-        Flash::success("Ebook <strong>".$Ebook->id."</strong> was updated.");
+        Flash::success("Ebook <strong>".$ebook->id."</strong> was updated.");
         return redirect()->route('admin.ebooks.index');
     }
 
@@ -149,9 +176,9 @@ class EbooksController extends Controller
     public function destroy($id)
     {
         if(Auth::user()->type == 'admin'){
-            $Ebook = Ebook::find($id);
-            $Ebook->delete();
-            Flash::error("Ebook <strong>".$Ebook->name."</strong> was deleted.");
+            $ebook = Ebook::find($id);
+            $ebook->delete();
+            Flash::error("Ebook <strong>".$ebook->name."</strong> was deleted.");
             return redirect()->route('admin.ebooks.index');            
         }else{
             return redirect()->route('admin.dashboard.index');

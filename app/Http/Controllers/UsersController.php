@@ -8,7 +8,6 @@ use Auth;
 use App\Http\Requests;
 use App\User;
 use Laracasts\Flash\Flash;
-use App\Http\Requests\UserRequest;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 class UsersController extends Controller
