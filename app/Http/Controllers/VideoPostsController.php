@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request ;
+use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Laracasts\Flash\Flash;
-use App\VideoPost;
 use App\Tag;
 use App\Image;
 use App\Category;
+use App\VideoPost;
 use Auth;
 use Config;
 class VideoPostsController extends Controller
@@ -19,15 +19,17 @@ class VideoPostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request  $request)
+    public function index(Request $request)
     {
-        $videos= VideoPost::Search($request->title)->orderBy('id','DESC')->paginate(5);
-        $videos->each(function($videos){
-            $videos->category;
-            $videos->user;
+        $videoposts= VideoPost::Search($request->title)->orderBy('id','DESC')->paginate(5);
+        $videoposts->each(function($videoposts){
+            $videoposts->category;
+            $videoposts->images;
+            $videoposts->tags;
+            $videoposts->user;
         });
-        return view('admin.videos.index')
-        ->with('videos',$videos);
+        return view('admin.videoposts.index')
+        ->with('videoposts',$videoposts);
     }
 
     /**
@@ -41,10 +43,9 @@ class VideoPostsController extends Controller
             if(Auth::user()->type == 'admin'){
                 $categories = Category::orderBy('name','ASC')->lists('name','id');
                 $tags =Tag::orderBy('name','ASC')->lists('name','id');
-                $videos = VideoPost::orderBy('id','DESC')->paginate(4);
-
-                return view('admin.videos.create')
-                ->with('videos',$videos)
+                $videoposts = VideoPost::orderBy('id','DESC')->paginate(4);
+                return view('admin.videoposts.create')
+                ->with('videoposts',$videoposts)
                 ->with('categories',$categories)
                 ->with('tags',$tags);                
             }else{
@@ -56,30 +57,51 @@ class VideoPostsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request   $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if($request->file('image')){
-            $file = $request->file('image');
-            $imagename = 'img_'. time() . '.' . $file->getClientOriginalExtension();
-            $path = public_path(). '/images/videos/';
-            $file->move($path,$imagename);            
+        $videopost = new VideoPost($request->except('images','category_id','tags'));
+        $videopost->user_id = \Auth::user()->id;
+        $videopost->save();
+        //associate all tags for the post
+        $videopost->tags()->sync($request->tags);
+        $picture = '';
+        //associate category with post
+        $category = Category::find($request['category_id']);
+        $videopost->category()->associate($category);
+        //Process images from the form
+        if ($request->hasFile('images')) {
+            $files = $request->file('images');
+            foreach($files as $file){
+                //image data
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $picture = date('His').'_'.$filename;
+                //make images sliders
+                $image=\Image::make($file->getRealPath()); //Call image library installed.
+                $destinationPath = public_path().'/img/videoposts/';
+                $image->resize(1300, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->save($destinationPath.'slider_'.$picture);
+                //make images thumbnails
+                $image2=\Image::make($file->getRealPath()); //Call immage library installed.
+                $thumbPath = public_path().'/img/videoposts/thumbs/';
+                $image2->resize(null, 230, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image2->save($thumbPath.'thumb_'.$picture);
+                //save image information on the db.
+                $imageDb = new Image();
+                $imageDb->name = $picture;
+                $imageDb->horse()->associate($horse);
+                $imageDb->save();
+            }
         }
-        $video = new VideoPost($request->all());
-        $video->user_id = \Auth::user()->id;
-        $video->save();
-
-        $video->tags()->sync($request->tags);
-
-        $image = new Image();
-        $image->name = $imagename;
-        $image->video()->associate($video); // Associate the recent video id with the image.
-        $image->save();
-        Flash::success("VideoPost <strong>".$video->name."</strong> was created.");
-        return redirect()->route('admin.videos.index');
-
+        Flash::success("VideoPost <strong>".$videopost->title."</strong> was created.");
+        return redirect()->route('admin.videoposts.index');
     }
 
     /**
@@ -90,9 +112,8 @@ class VideoPostsController extends Controller
      */
     public function show($id)
     {
-        $video = VideoPost::find($id);
-
-        return view('admin.videos.show')->with('video',$video);
+        $videopost = VideoPost::find($id);
+        return view('admin.videoposts.show')->with('VideoPost',$videopost);
     }
 
     /**
@@ -104,12 +125,15 @@ class VideoPostsController extends Controller
     public function edit($id)
     {          
         if(Auth::user()->type == 'admin'){
-            $video = VideoPost::find($id);
+            $videopost = VideoPost::find($id);
             $categories = Category::orderBy('name','DESC')->lists('name','id');
             $tags = Tag::orderBy('name','DESC')->lists('name','id');
-
-            $myTags = $video->tags->lists('id')->ToArray(); //give me a array with only the tags id.
-            return View('admin.videos.edit')->with('video',$video)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
+            $images = new Image();
+            $videopost->images->each(function($videopost){
+                $videopost->images;
+            });
+            $myTags = $videopost->tags->lists('id')->ToArray(); //give me a array with only the tags id.
+            return View('admin.videoposts.edit')->with('videopost',$videopost)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
         }else{
             return redirect()->route('admin.dashboard.index');
         }
@@ -119,22 +143,19 @@ class VideoPostsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request   $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request  $request, $id)
+    public function update(Request $request, $id)
     {
-        $video =VideoPost::find($id);
-        $video->fill($request->all());
-        $video->user_id = \Auth::user()->id;
-        $video->save();
-
-        $video->tags()->sync($request->tags);
-
-      
-        Flash::success("VideoPost <strong>".$video->id."</strong> was updated.");
-        return redirect()->route('admin.videos.index');
+        $videopost =VideoPost::find($id);
+        $videopost->fill($request->all());
+        $videopost->user_id = \Auth::user()->id;
+        $videopost->save();
+        $videopost->tags()->sync($request->tags);      
+        Flash::success("VideoPost <strong>".$videopost->id."</strong> was updated.");
+        return redirect()->route('admin.videoposts.index');
     }
 
     /**
@@ -146,13 +167,12 @@ class VideoPostsController extends Controller
     public function destroy($id)
     {
         if(Auth::user()->type == 'admin'){
-            $video = VideoPost::find($id);
-            $video->delete();
-            Flash::error("VideoPost <strong>".$video->name."</strong> was deleted.");
-            return redirect()->route('admin.videos.index');            
+            $videopost = VideoPost::find($id);
+            $videopost->delete();
+            Flash::error("VideoPost <strong>".$videopost->name."</strong> was deleted.");
+            return redirect()->route('admin.videoposts.index');            
         }else{
             return redirect()->route('admin.dashboard.index');
         }
-
     }
 }

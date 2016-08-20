@@ -10,7 +10,6 @@ use App\PhotoPost;
 use App\Tag;
 use App\Image;
 use App\Category;
-use App\PhotoPhotoPost;
 use Auth;
 use Config;
 class PhotoPostsController extends Controller
@@ -25,6 +24,8 @@ class PhotoPostsController extends Controller
         $photoposts= PhotoPost::Search($request->title)->orderBy('id','DESC')->paginate(5);
         $photoposts->each(function($photoposts){
             $photoposts->category;
+            $photoposts->images;
+            $photoposts->tags;
             $photoposts->user;
         });
         return view('admin.photoposts.index')
@@ -38,17 +39,18 @@ class PhotoPostsController extends Controller
      */
     public function create()
     {
-        if(Auth::user()->type == 'admin'){
-            $categories = Category::orderBy('name','ASC')->lists('name','id');
-            $tags =Tag::orderBy('name','ASC')->lists('name','id');
-            $photoposts = PhotoPost::orderBy('id','DESC')->paginate(4);
-
-            return view('admin.photoposts.create')
-            ->with('photoposts',$photoposts)
-            ->with('categories',$categories)
-            ->with('tags',$tags);                
-        }else{
-            return redirect()->route('admin.dashboard.index');
+        if(Auth::check()){
+            if(Auth::user()->type == 'admin'){
+                $categories = Category::orderBy('name','ASC')->lists('name','id');
+                $tags =Tag::orderBy('name','ASC')->lists('name','id');
+                $photoposts = PhotoPost::orderBy('id','DESC')->paginate(4);
+                return view('admin.photoposts.create')
+                ->with('photoposts',$photoposts)
+                ->with('categories',$categories)
+                ->with('tags',$tags);                
+            }else{
+                return redirect()->route('admin.dashboard.index');
+            }
         }
     }
 
@@ -58,25 +60,50 @@ class PhotoPostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PhotoPostRequest $request)
+    public function store(Request $request)
     {
-        if($request->file('image')){
-            $file = $request->file('image');
-            $imagename = 'img_'. time() . '.' . $file->getClientOriginalExtension();
-            $path = public_path(). '/images/photoposts/';
-            $file->move($path,$imagename);            
+        $photopost = new PhotoPost($request->except('images','category_id','tags'));
+        $photopost->user_id = \Auth::user()->id;
+        $photopost->save();
+        //associate all tags for the post
+        $photopost->tags()->sync($request->tags);
+        $picture = '';
+        //associate category with post
+        $category = Category::find($request['category_id']);
+        $photopost->category()->associate($category);
+
+        //Process images from the form
+        if ($request->hasFile('images')) {
+
+            $files = $request->file('images');
+
+            foreach($files as $file){
+                //image data
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $picture = date('His').'_'.$filename;
+                //make images sliders
+                $image=\Image::make($file->getRealPath()); //Call image library installed.
+                $destinationPath = public_path().'/img/photoposts/';
+                $image->resize(1300, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->save($destinationPath.'slider_'.$picture);
+                //make images thumbnails
+                $image2=\Image::make($file->getRealPath()); //Call immage library installed.
+                $thumbPath = public_path().'/img/photoposts/thumbs/';
+                $image2->resize(null, 230, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image2->save($thumbPath.'thumb_'.$picture);
+                //save image information on the db.
+                $imageDb = new Image();
+                $imageDb->name = $picture;
+                $imageDb->horse()->associate($horse);
+                $imageDb->save();
+            }
         }
-        $post = new PhotoPost($request->all());
-        $post->user_id = \Auth::user()->id;
-        $post->save();
-
-        $post->tags()->sync($request->tags);
-
-        $image = new Image();
-        $image->name = $imagename;
-        $image->post()->associate($post); // Associate the recent post id with the image.
-        $image->save();
-        Flash::success("PhotoPost <strong>".$post->name."</strong> was created.");
+        Flash::success("PhotoPost <strong>".$photopost->title."</strong> was created.");
         return redirect()->route('admin.photoposts.index');
 
     }
@@ -89,9 +116,8 @@ class PhotoPostsController extends Controller
      */
     public function show($id)
     {
-        $post = PhotoPost::find($id);
-
-        return view('admin.photoposts.show')->with('post',$post);
+        $photopost = PhotoPost::find($id);
+        return view('admin.photoposts.show')->with('PhotoPost',$photopost);
     }
 
     /**
@@ -103,12 +129,15 @@ class PhotoPostsController extends Controller
     public function edit($id)
     {          
         if(Auth::user()->type == 'admin'){
-            $post = PhotoPost::find($id);
+            $photopost = PhotoPost::find($id);
             $categories = Category::orderBy('name','DESC')->lists('name','id');
             $tags = Tag::orderBy('name','DESC')->lists('name','id');
-
-            $myTags = $post->tags->lists('id')->ToArray(); //give me a array with only the tags id.
-            return View('admin.photoposts.edit')->with('post',$post)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
+            $images = new Image();
+            $photopost->images->each(function($photopost){
+                $photopost->images;
+            });
+            $myTags = $photopost->tags->lists('id')->ToArray(); //give me a array with only the tags id.
+            return View('admin.photoposts.edit')->with('photopost',$photopost)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
         }else{
             return redirect()->route('admin.dashboard.index');
         }
@@ -124,15 +153,12 @@ class PhotoPostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post =PhotoPost::find($id);
-        $post->fill($request->all());
-        $post->user_id = \Auth::user()->id;
-        $post->save();
-
-        $post->tags()->sync($request->tags);
-
-      
-        Flash::success("PhotoPost <strong>".$post->id."</strong> was updated.");
+        $photopost =PhotoPost::find($id);
+        $photopost->fill($request->all());
+        $photopost->user_id = \Auth::user()->id;
+        $photopost->save();
+        $photopost->tags()->sync($request->tags);      
+        Flash::success("PhotoPost <strong>".$photopost->id."</strong> was updated.");
         return redirect()->route('admin.photoposts.index');
     }
 
@@ -145,9 +171,9 @@ class PhotoPostsController extends Controller
     public function destroy($id)
     {
         if(Auth::user()->type == 'admin'){
-            $post = PhotoPost::find($id);
-            $post->delete();
-            Flash::error("PhotoPost <strong>".$post->name."</strong> was deleted.");
+            $photopost = PhotoPost::find($id);
+            $photopost->delete();
+            Flash::error("PhotoPost <strong>".$photopost->name."</strong> was deleted.");
             return redirect()->route('admin.photoposts.index');            
         }else{
             return redirect()->route('admin.dashboard.index');

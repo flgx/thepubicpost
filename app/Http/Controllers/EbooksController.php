@@ -10,7 +10,6 @@ use App\Ebook;
 use App\Tag;
 use App\Image;
 use App\Category;
-use App\Ebook;
 use Auth;
 use Config;
 class EbooksController extends Controller
@@ -25,6 +24,8 @@ class EbooksController extends Controller
         $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->paginate(5);
         $ebooks->each(function($ebooks){
             $ebooks->category;
+            $ebooks->images;
+            $ebooks->tags;
             $ebooks->user;
         });
         return view('admin.ebooks.index')
@@ -43,7 +44,6 @@ class EbooksController extends Controller
                 $categories = Category::orderBy('name','ASC')->lists('name','id');
                 $tags =Tag::orderBy('name','ASC')->lists('name','id');
                 $ebooks = Ebook::orderBy('id','DESC')->paginate(4);
-
                 return view('admin.ebooks.create')
                 ->with('ebooks',$ebooks)
                 ->with('categories',$categories)
@@ -67,16 +67,13 @@ class EbooksController extends Controller
         $ebook->save();
         //associate all tags for the post
         $ebook->tags()->sync($request->tags);
-                $picture = '';
+        $picture = '';
         //associate category with post
         $category = Category::find($request['category_id']);
-        $horse->category()->associate($category);
-
+        $ebook->category()->associate($category);
         //Process images from the form
         if ($request->hasFile('images')) {
-
             $files = $request->file('images');
-
             foreach($files as $file){
                 //image data
                 $filename = $file->getClientOriginalName();
@@ -90,7 +87,7 @@ class EbooksController extends Controller
                 });
                 $image->save($destinationPath.'slider_'.$picture);
                 //make images thumbnails
-                $image2=\Image::make($file->getRealPath()); //Call image library installed.
+                $image2=\Image::make($file->getRealPath()); //Call immage library installed.
                 $thumbPath = public_path().'/img/ebooks/thumbs/';
                 $image2->resize(null, 230, function ($constraint) {
                     $constraint->aspectRatio();
@@ -105,7 +102,6 @@ class EbooksController extends Controller
         }
         Flash::success("Ebook <strong>".$ebook->title."</strong> was created.");
         return redirect()->route('admin.ebooks.index');
-
     }
 
     /**
@@ -117,7 +113,6 @@ class EbooksController extends Controller
     public function show($id)
     {
         $ebook = Ebook::find($id);
-
         return view('admin.ebooks.show')->with('Ebook',$ebook);
     }
 
@@ -135,8 +130,7 @@ class EbooksController extends Controller
             $tags = Tag::orderBy('name','DESC')->lists('name','id');
             $images = new Image();
             $ebook->images->each(function($ebook){
-            $ebook->images;
-
+                $ebook->images;
             });
             $myTags = $ebook->tags->lists('id')->ToArray(); //give me a array with only the tags id.
             return View('admin.ebooks.edit')->with('ebook',$ebook)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
@@ -159,10 +153,7 @@ class EbooksController extends Controller
         $ebook->fill($request->all());
         $ebook->user_id = \Auth::user()->id;
         $ebook->save();
-
-        $ebook->tags()->sync($request->tags);
-
-      
+        $ebook->tags()->sync($request->tags);      
         Flash::success("Ebook <strong>".$ebook->id."</strong> was updated.");
         return redirect()->route('admin.ebooks.index');
     }
@@ -183,6 +174,5 @@ class EbooksController extends Controller
         }else{
             return redirect()->route('admin.dashboard.index');
         }
-
     }
 }
