@@ -40,17 +40,15 @@ class VideoPostsController extends Controller
     public function create()
     {
         if(Auth::check()){
-            if(Auth::user()->type == 'admin'){
-                $categories = Category::orderBy('name','ASC')->lists('name','id');
-                $tags =Tag::orderBy('name','ASC')->lists('name','id');
-                $videoposts = VideoPost::orderBy('id','DESC')->paginate(4);
-                return view('admin.videoposts.create')
-                ->with('videoposts',$videoposts)
-                ->with('categories',$categories)
-                ->with('tags',$tags);                
-            }else{
-                return redirect()->route('admin.dashboard.index');
-            }
+            $categories = Category::orderBy('name','ASC')->lists('name','id');
+            $tags =Tag::orderBy('name','ASC')->lists('name','id');
+            $videoposts = VideoPost::orderBy('id','DESC')->paginate(4);
+            return view('admin.videoposts.create')
+            ->with('videoposts',$videoposts)
+            ->with('categories',$categories)
+            ->with('tags',$tags);
+        }else{
+            return redirect()->back();
         }
     }
 
@@ -62,16 +60,19 @@ class VideoPostsController extends Controller
      */
     public function store(Request $request)
     {
-        $videopost = new VideoPost($request->except('images','category_id','tags'));
-        $videopost->user_id = \Auth::user()->id;
-        $videopost->save();
-        //associate all tags for the post
-        $videopost->tags()->sync($request->tags);
-        $picture = '';
-        //associate category with post
+        $videpost = new VideoPost($request->except('images','category_id','tags'));
+        $videpost->user_id = \Auth::user()->id;
+       //associate category with videpost
         $category = Category::find($request['category_id']);
-        $videopost->category()->associate($category);
-        //Process images from the form
+        $videpost->category()->associate($category);
+        $videpost->save();  
+
+        //associate all tags for the videpost
+        $videpost->tags()->sync($request->tags);
+        $picture = '';
+
+      
+        //Process Form Images
         if ($request->hasFile('images')) {
             $files = $request->file('images');
             foreach($files as $file){
@@ -81,14 +82,14 @@ class VideoPostsController extends Controller
                 $picture = date('His').'_'.$filename;
                 //make images sliders
                 $image=\Image::make($file->getRealPath()); //Call image library installed.
-                $destinationPath = public_path().'/img/videoposts/';
+                $destinationPath = public_path().'/img/videposts/';
                 $image->resize(1300, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $image->save($destinationPath.'slider_'.$picture);
                 //make images thumbnails
                 $image2=\Image::make($file->getRealPath()); //Call immage library installed.
-                $thumbPath = public_path().'/img/videoposts/thumbs/';
+                $thumbPath = public_path().'/img/videposts/thumbs/';
                 $image2->resize(null, 230, function ($constraint) {
                     $constraint->aspectRatio();
                 });
@@ -96,12 +97,14 @@ class VideoPostsController extends Controller
                 //save image information on the db.
                 $imageDb = new Image();
                 $imageDb->name = $picture;
-                $imageDb->horse()->associate($horse);
+                $imageDb->videpost()->associate($videpost);
                 $imageDb->save();
             }
+        }else{
+            return redirect()->back();
         }
-        Flash::success("VideoPost <strong>".$videopost->title."</strong> was created.");
-        return redirect()->route('admin.videoposts.index');
+        Flash::success("VideoPost <strong>".$videpost->title."</strong> was created.");
+        return redirect()->route('admin.videposts.index');
     }
 
     /**

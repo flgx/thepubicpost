@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','type','facebookid','googleid','realid','featured'
+        'name', 'email', 'password','type','facebook_id','google_id','real_id','featured','profile_image'
     ];
 
     /**
@@ -27,4 +27,10 @@ class User extends Authenticatable
         
         return $this->hasMany('App\Post');
     }
+
+    public function images(){
+        
+        return $this->hasMany('App\Image');
+    }
+
 }

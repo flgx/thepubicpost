@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 return [
 
@@ -37,6 +37,11 @@ return [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
+    ],
+    'facebook' => [
+    'client_id' => '167806036983988',
+    'client_secret' => '0504d49d14514413884528dfb8771e75',
+    'redirect' => 'http://localhost:80/thepublicpost/public/auth/facebook/callback',
     ],
 
 ];

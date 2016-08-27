@@ -11,6 +11,7 @@
 |
 */
 Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
+
 	Route::get('/', 'HomeController@index');
 	Route::resource('images', 'ImagesController');
 		Route::get('images/{id}/destroy',[
@@ -47,7 +48,19 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 			'uses' => 'UsersController@destroy',
 			'as'   => 'admin.users.destroy',
 		]);
+	Route::resource('categories', 'CategoriesController');
+		Route::get('categories/{id}/destroy',[
+			'uses' => 'CategoriesController@destroy',
+			'as'   => 'admin.categories.destroy',
+		]);
+	Route::resource('tags', 'TagsController');
+		Route::get('tags/{id}/destroy',[
+			'uses' => 'TagsController@destroy',
+			'as'   => 'admin.tags.destroy',
+		]);
 });
+Route::get('auth/facebook', 'SocialAuth2Controller@redirectToProvider');
+Route::get('auth/facebook/callback', 'SocialAuth2Controller@handleProviderCallback');
 Route::get('/', function () {
 	    return view('front.welcome');
 });

@@ -40,17 +40,15 @@ class PhotoPostsController extends Controller
     public function create()
     {
         if(Auth::check()){
-            if(Auth::user()->type == 'admin'){
-                $categories = Category::orderBy('name','ASC')->lists('name','id');
-                $tags =Tag::orderBy('name','ASC')->lists('name','id');
-                $photoposts = PhotoPost::orderBy('id','DESC')->paginate(4);
-                return view('admin.photoposts.create')
-                ->with('photoposts',$photoposts)
-                ->with('categories',$categories)
-                ->with('tags',$tags);                
-            }else{
-                return redirect()->route('admin.dashboard.index');
-            }
+            $categories = Category::orderBy('name','ASC')->lists('name','id');
+            $tags =Tag::orderBy('name','ASC')->lists('name','id');
+            $photoposts = PhotoPost::orderBy('id','DESC')->paginate(4);
+            return view('admin.photoposts.create')
+            ->with('photoposts',$photoposts)
+            ->with('categories',$categories)
+            ->with('tags',$tags);                
+        }else{
+            return redirect()->back();
         }
     }
 
@@ -64,19 +62,19 @@ class PhotoPostsController extends Controller
     {
         $photopost = new PhotoPost($request->except('images','category_id','tags'));
         $photopost->user_id = \Auth::user()->id;
-        $photopost->save();
-        //associate all tags for the post
-        $photopost->tags()->sync($request->tags);
-        $picture = '';
-        //associate category with post
+       //associate category with photopost
         $category = Category::find($request['category_id']);
         $photopost->category()->associate($category);
+        $photopost->save();  
 
-        //Process images from the form
+        //associate all tags for the photopost
+        $photopost->tags()->sync($request->tags);
+        $picture = '';
+
+      
+        //Process Form Images
         if ($request->hasFile('images')) {
-
             $files = $request->file('images');
-
             foreach($files as $file){
                 //image data
                 $filename = $file->getClientOriginalName();
@@ -99,13 +97,14 @@ class PhotoPostsController extends Controller
                 //save image information on the db.
                 $imageDb = new Image();
                 $imageDb->name = $picture;
-                $imageDb->horse()->associate($horse);
+                $imageDb->photopost()->associate($photopost);
                 $imageDb->save();
             }
+        }else{
+            return redirect()->back();
         }
         Flash::success("PhotoPost <strong>".$photopost->title."</strong> was created.");
         return redirect()->route('admin.photoposts.index');
-
     }
 
     /**

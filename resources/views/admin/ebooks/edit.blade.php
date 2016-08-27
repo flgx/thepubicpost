@@ -36,7 +36,10 @@
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,$myTags,['class'=> 'form-control select-tag','multiple','required']) !!}
                     </div>
-
+                    <div class="form-group">
+                        {!! Form::label('images','Images') !!}
+                        {!! Form::file('images[]', array('multiple'=>true)) !!}
+                    </div>
                     <div class="form-group">
                         {!! Form::submit('Edit Ebook',['class'=>'btn btn-primary']) !!}
                     </div>

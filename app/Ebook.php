@@ -39,8 +39,12 @@ class Ebook extends Model
     	return $this->belongsToMany('App\Tag')->withTimestamps();
     }     
     public function favorites(){
+        
+        return $this->hasMany('App\Favorite');
+    }      
+    public function newsletters(){
     	
-    	return $this->hasMany('App\Favorite');
+    	return $this->hasMany('App\Newsletter');
     } 
     public function scopeSearch($query, $title){
         $thequery=$query->where('title','like','%'.$title.'%');

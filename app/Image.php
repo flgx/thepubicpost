@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    protected $table = "images";
+    protected $table = 'images';
 
-    protected $fillable = ['name','content','post_id'];
+    protected $fillable = ['name','post_id','ebook_id','videopost_id','photopost_id'];
 
     public function post(){
     	
@@ -21,5 +21,8 @@ class Image extends Model
     public function postphoto(){
     	
     	return $this->belongsTo('App\PostPhoto');
-    }    
+    }
+    public function user(){
+        return $this->belongsTo('App\User');
+    }
 }

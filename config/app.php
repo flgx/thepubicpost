@@ -149,6 +149,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+
 
         /*
          * Package Service Providers...
@@ -166,6 +168,8 @@ return [
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
 
     ],
 
@@ -214,8 +218,11 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         /*FLGX ALIASES */
         'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class,
-        'Flash' => Laracasts\Flash\Flash::class,   
+        'Flash' => Laracasts\Flash\Flash::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+
+
 
     ],
 

@@ -18,7 +18,8 @@ class CreatePostTable extends Migration
             $table->text('content');
             $table->string('featured');
             $table->string('featured_text');
-            $table->strig('views');
+            $table->string('views');
+            $table->string('slug');
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 

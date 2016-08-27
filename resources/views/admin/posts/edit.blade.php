@@ -30,7 +30,11 @@
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,$myTags,['class'=> 'form-control select-tag','multiple','required']) !!}
                     </div>
-
+                    
+                    <div class="form-group">
+                        {!! Form::label('images','Images') !!}
+                        {!! Form::file('images',null,['class'=> 'form-control','required']) !!}
+                    </div>
                     <div class="form-group">
                         {!! Form::submit('Edit Post',['class'=>'btn btn-primary']) !!}
                     </div>
@@ -48,15 +52,12 @@
                     ?>
                     @foreach($post->images as $image)
                     <div class="col-xs-12">
-                        <?php if($i==0){echo '<h1>Featured Image:</h1> <hr>';} ?>
-                        {{ HTML::image('img/posts/thumbs/thumb_'.$image->name, '$post->title') }}
-                        
+                        <img src="{{asset('img/posts/thumbs').'/thumb_'.$image->name, '$post->title'}}" alt="The Public Post {{$post->title}}">
                         <p class="col-xs-12" style="padding-left:0px; margin-top:10px;">
                             <a href="#" class="btn-delete btn btn-danger"  data-horse="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
                         </p>
                     </div>
                     <hr>
-                    <?php $i++; ?>
                     @endforeach
                 @else
                     <p>Not images found. Please add a new image.</p>  

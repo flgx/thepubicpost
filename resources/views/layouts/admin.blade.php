@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>The Public Post | @yield('title')</title>
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css')}}">
@@ -29,7 +29,8 @@
     <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css')}}">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="{{ asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('dist/js/ui/trumbowyg.min.css"')}}">
+    <link rel="stylesheet" href="{{ asset('dist/js/ui/trumbowyg.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('dist/css/chosen.css')}}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -53,6 +54,7 @@
     </section>
     <!-- Main content -->
     <section class="content">
+      @include('flash::message')
       @yield('content')
     </section>
     <!-- /.content -->
@@ -72,8 +74,8 @@
     </script>
     <script>
     $(function(){
-    $('.nav a').filter(function(){return this.href==location.href}).parent().addClass('active').siblings().removeClass('active')
-      $('.nav a').click(function(){
+    $('.treeview a').filter(function(){return this.href==location.href}).parent().addClass('active').siblings().removeClass('active')
+      $('.treeview a').click(function(){
         $(this).parent().addClass('active').siblings().removeClass('active')  
       })
     })
@@ -108,5 +110,17 @@
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js')}}"></script>
     <script src="{{ asset('dist/js/trumbowyg.min.js')}}"></script>
+    <script src="{{ asset('dist/js/chosen.jquery.min.js')}}"></script>
+    <script>
+        $('#flash-overlay-modal').modal();
+    </script>
+    @yield('js')
+    <script>
+        if (window.location.hash == '#_=_'){
+    history.replaceState 
+        ? history.replaceState(null, null, window.location.href.split('#')[0])
+        : window.location.hash = '';
+}
+    </script>
 </body>
 </html>

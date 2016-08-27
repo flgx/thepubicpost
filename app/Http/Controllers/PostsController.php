@@ -40,17 +40,13 @@ class PostsController extends Controller
     public function create()
     {
         if(Auth::check()){
-            if(Auth::user()->type == 'admin'){
                 $categories = Category::orderBy('name','ASC')->lists('name','id');
                 $tags =Tag::orderBy('name','ASC')->lists('name','id');
                 $posts = Post::orderBy('id','DESC')->paginate(4);
                 return view('admin.posts.create')
                 ->with('posts',$posts)
                 ->with('categories',$categories)
-                ->with('tags',$tags);                
-            }else{
-                return redirect()->route('admin.dashboard.index');
-            }
+                ->with('tags',$tags);
         }
     }
 
@@ -64,14 +60,17 @@ class PostsController extends Controller
     {
         $post = new Post($request->except('images','category_id','tags'));
         $post->user_id = \Auth::user()->id;
-        $post->save();
+       //associate category with post
+        $category = Category::find($request['category_id']);
+        $post->category()->associate($category);
+        $post->save();  
+
         //associate all tags for the post
         $post->tags()->sync($request->tags);
         $picture = '';
-        //associate category with post
-        $category = Category::find($request['category_id']);
-        $post->category()->associate($category);
-        //Process images from the form
+
+      
+        //Process Form Images
         if ($request->hasFile('images')) {
             $files = $request->file('images');
             foreach($files as $file){
@@ -96,9 +95,11 @@ class PostsController extends Controller
                 //save image information on the db.
                 $imageDb = new Image();
                 $imageDb->name = $picture;
-                $imageDb->horse()->associate($horse);
+                $imageDb->post()->associate($post);
                 $imageDb->save();
             }
+        }else{
+           return redirect()->back();
         }
         Flash::success("Post <strong>".$post->title."</strong> was created.");
         return redirect()->route('admin.posts.index');

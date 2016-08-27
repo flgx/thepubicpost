@@ -39,18 +39,16 @@ class EbooksController extends Controller
      */
     public function create()
     {
-        if(Auth::check()){
-            if(Auth::user()->type == 'admin'){
-                $categories = Category::orderBy('name','ASC')->lists('name','id');
-                $tags =Tag::orderBy('name','ASC')->lists('name','id');
-                $ebooks = Ebook::orderBy('id','DESC')->paginate(4);
-                return view('admin.ebooks.create')
-                ->with('ebooks',$ebooks)
-                ->with('categories',$categories)
-                ->with('tags',$tags);                
-            }else{
-                return redirect()->route('admin.dashboard.index');
-            }
+        if(Auth::check()){        
+            $categories = Category::orderBy('name','ASC')->lists('name','id');
+            $tags =Tag::orderBy('name','ASC')->lists('name','id');
+            $ebooks = Ebook::orderBy('id','DESC')->paginate(4);
+            return view('admin.ebooks.create')
+            ->with('ebooks',$ebooks)
+            ->with('categories',$categories)
+            ->with('tags',$tags);
+        }else{
+            return redirect()->back();
         }
     }
 
@@ -64,14 +62,17 @@ class EbooksController extends Controller
     {
         $ebook = new Ebook($request->except('images','category_id','tags'));
         $ebook->user_id = \Auth::user()->id;
-        $ebook->save();
-        //associate all tags for the post
-        $ebook->tags()->sync($request->tags);
-        $picture = '';
-        //associate category with post
+       //associate category with ebook
         $category = Category::find($request['category_id']);
         $ebook->category()->associate($category);
-        //Process images from the form
+        $ebook->save();  
+
+        //associate all tags for the ebook
+        $ebook->tags()->sync($request->tags);
+        $picture = '';
+
+      
+        //Process Form Images
         if ($request->hasFile('images')) {
             $files = $request->file('images');
             foreach($files as $file){
@@ -96,9 +97,11 @@ class EbooksController extends Controller
                 //save image information on the db.
                 $imageDb = new Image();
                 $imageDb->name = $picture;
-                $imageDb->horse()->associate($horse);
+                $imageDb->ebook()->associate($ebook);
                 $imageDb->save();
             }
+        }else{
+            return redirect()->back();
         }
         Flash::success("Ebook <strong>".$ebook->title."</strong> was created.");
         return redirect()->route('admin.ebooks.index');

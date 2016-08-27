@@ -5,18 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateVideoPostsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('video_posts', function (Blueprint $table) {
@@ -25,7 +13,8 @@ class CreateVideoPostsTable extends Migration
             $table->text('content');
             $table->string('video_link');
             $table->string('featured');
-            $table->strig('views');
+            $table->string('slug');
+            $table->string('views');
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 

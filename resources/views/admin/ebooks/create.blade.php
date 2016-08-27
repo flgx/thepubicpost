@@ -29,16 +29,16 @@
                     </div>
                     
                     <div class="form-group">
-                        {!! Form::label('featured','Featured') !!}
-                        {!! Form::checkbox('featured',null,false,['class' => 'form-control','required']) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}
+                        {!! Form::checkbox('featured', 'null', false) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,null,['class'=> 'form-control select-tag','multiple','required']) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('image','Image') !!}
-                        {!! Form::file('image',null,['class'=> 'form-control','required']) !!}
+                        {!! Form::label('images','Images') !!}
+                        {!! Form::file('images[]', array('multiple'=>true)) !!}
                     </div>
 
             		<div class="form-group">
