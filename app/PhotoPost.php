@@ -9,9 +9,9 @@ class PhotoPost extends Model
 {
     use Sluggable;
     
-    protected $table = "photo_posts";
+    protected $table = 'photoposts';
 
-    protected $fillable = ['title','content','views','featured','category_id','user_id','slug'];
+    protected $fillable = ['title','content','views','status','featured','category_id','user_id','slug'];
 
     public function sluggable()
     {

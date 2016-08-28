@@ -7,7 +7,7 @@ class CreateVideoPostsTable extends Migration
 {
     public function up()
     {
-        Schema::create('video_posts', function (Blueprint $table) {
+        Schema::create('videoposts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->text('content');
@@ -15,6 +15,7 @@ class CreateVideoPostsTable extends Migration
             $table->string('featured');
             $table->string('slug');
             $table->string('views');
+            $table->enum('status',['approved','suspended']);
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 
@@ -32,6 +33,6 @@ class CreateVideoPostsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('video_posts');
+        Schema::drop('videoposts');
     }
 }

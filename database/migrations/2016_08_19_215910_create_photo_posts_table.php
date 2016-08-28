@@ -12,13 +12,14 @@ class CreatePhotoPostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('photo_posts', function (Blueprint $table) {
+        Schema::create('photoposts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->text('content');
             $table->string('featured');
             $table->string('views');
             $table->string('slug');
+            $table->enum('status',['approved','suspended']);
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 
@@ -35,6 +36,6 @@ class CreatePhotoPostsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('photo_posts');
+        Schema::drop('photoposts');
     }
 }

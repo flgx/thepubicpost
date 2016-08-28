@@ -1,4 +1,4 @@
-<?php
+_<?php
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -15,15 +15,15 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-           $table->integer('post_id')->unsigned()->nullable()->default(null);
-           $table->integer('photopost_id')->unsigned()->nullable()->default(null);
-           $table->integer('videopost_id')->unsigned()->nullable()->default(null);
-           $table->integer('ebook_id')->unsigned()->nullable()->default(null);
+            $table->integer('post_id')->unsigned()->nullable()->default(null);
+            $table->integer('photo_post_id')->unsigned()->nullable()->default(null);
+            $table->integer('video_post_id')->unsigned()->nullable()->default(null);
+            $table->integer('ebook_id')->unsigned()->nullable()->default(null);
 
-            $table->foreign('post_id')->references('id')->on('posts');
-            $table->foreign('photopost_id')->references('id')->on('photo_posts');
-            $table->foreign('videopost_id')->references('id')->on('video_posts');
-            $table->foreign('ebook_id')->references('id')->on('ebooks');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('photo_post_id')->references('id')->on('photoposts')->onDelete('cascade');
+            $table->foreign('video_post_id')->references('id')->on('videoposts')->onDelete('cascade');
+            $table->foreign('ebook_id')->references('id')->on('ebooks')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ class CreateEbooksTable extends Migration
             $table->string('featured');
             $table->string('slug');
             $table->string('views');
+            $table->enum('status',['approved','suspended']);
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 

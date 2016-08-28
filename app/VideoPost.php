@@ -9,9 +9,9 @@ class VideoPost extends Model
 {
     use Sluggable;
     
-    protected $table = "video_posts";
+    protected $table = "videoposts";
 
-    protected $fillable = ['title','content','video_link','views','featured','category_id','user_id','slug'];
+    protected $fillable = ['title','content','video_link','views','status','featured','category_id','user_id','slug'];
 
     public function sluggable()
     {

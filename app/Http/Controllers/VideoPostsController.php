@@ -70,41 +70,8 @@ class VideoPostsController extends Controller
         //associate all tags for the videpost
         $videpost->tags()->sync($request->tags);
         $picture = '';
-
-      
-        //Process Form Images
-        if ($request->hasFile('images')) {
-            $files = $request->file('images');
-            foreach($files as $file){
-                //image data
-                $filename = $file->getClientOriginalName();
-                $extension = $file->getClientOriginalExtension();
-                $picture = date('His').'_'.$filename;
-                //make images sliders
-                $image=\Image::make($file->getRealPath()); //Call image library installed.
-                $destinationPath = public_path().'/img/videposts/';
-                $image->resize(1300, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->save($destinationPath.'slider_'.$picture);
-                //make images thumbnails
-                $image2=\Image::make($file->getRealPath()); //Call immage library installed.
-                $thumbPath = public_path().'/img/videposts/thumbs/';
-                $image2->resize(null, 230, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image2->save($thumbPath.'thumb_'.$picture);
-                //save image information on the db.
-                $imageDb = new Image();
-                $imageDb->name = $picture;
-                $imageDb->videpost()->associate($videpost);
-                $imageDb->save();
-            }
-        }else{
-            return redirect()->back();
-        }
         Flash::success("VideoPost <strong>".$videpost->title."</strong> was created.");
-        return redirect()->route('admin.videposts.index');
+        return redirect()->route('admin.videoposts.index');
     }
 
     /**
@@ -173,6 +140,31 @@ class VideoPostsController extends Controller
             $videopost = VideoPost::find($id);
             $videopost->delete();
             Flash::error("VideoPost <strong>".$videopost->name."</strong> was deleted.");
+            return redirect()->route('admin.videoposts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+
+    public function approve($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $videopost = VideoPost::find($id);
+            $videopost->status='approved';
+            $videopost->save();
+            Flash::success("VideoPost <strong>".$videopost->title."</strong> was approved.");
+            return redirect()->route('admin.videoposts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    public function suspend($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $videopost = VideoPost::find($id);
+            $videopost->status='suspended';
+            $videopost->save();
+            Flash::warning("VideoPost <strong>".$videopost->title."</strong> was suspended.");
             return redirect()->route('admin.videoposts.index');            
         }else{
             return redirect()->route('admin.dashboard.index');

@@ -12,33 +12,28 @@
                         {!! Form::label('title','Title') !!}
                         {!! Form::text('title', $ebook->title,['class'=> 'form-control','placeholder'=>'Type a title','required']) !!}
                     </div>
-                    
-                    <div class="form-group">
-                        {!! Form::label('ebook_link','Ebook Link') !!}
-                        {!! Form::text('ebook_link', $ebook->ebook_link,['class'=> 'form-control','placeholder'=>'Type a Ebook link','required']) !!}
-                    </div>
+
                     <div class="form-group">
                         {!! Form::label('category_id','Category') !!}
                         {!! Form::select('category_id', $categories,$ebook->category->id,['class'=> 'form-control select-category','required']) !!}
-                    </div>
-                    
-                    <div class="form-group">
-                        {!! Form::label('featured','Featured') !!}
-                        {!! Form::checkbox('featured',$ebook->featured,false,['class' => 'form-control','required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('content','Content') !!}
                         {!! Form::textarea('content', $ebook->content,['class' => 'textarea-content','required']) !!}
                     </div>
-
+                    <div class="form-group">
+                        {!! Form::label('featured_text','Featured Text') !!}
+                        {!! Form::textarea('featured_text', $ebook->featured_text,['class' => 'textarea-content form-control','required']) !!}
+                    </div>
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,$myTags,['class'=> 'form-control select-tag','multiple','required']) !!}
                     </div>
+                    
                     <div class="form-group">
                         {!! Form::label('images','Images') !!}
-                        {!! Form::file('images[]', array('multiple'=>true)) !!}
+                        {!! Form::file('images',null,['class'=> 'form-control','required']) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::submit('Edit Ebook',['class'=>'btn btn-primary']) !!}
@@ -46,6 +41,7 @@
 
                 {!! Form::close() !!}
             </div>
+            
             <!-- Ebook Images -->
             <div class="col-md-6">
                 <h1>Images</h1>
@@ -56,20 +52,19 @@
                     ?>
                     @foreach($ebook->images as $image)
                     <div class="col-xs-12">
-                        <?php if($i==0){echo '<h1>Featured Image:</h1> <hr>';} ?>
-                        {{ HTML::image('img/ebooks/thumbs/thumb_'.$image->name, '$ebook->title') }}
-                        
+                        <img src="{{asset('img/ebooks/thumbs').'/thumb_'.$image->name, '$ebook->title'}}" alt="The Public Ebook {{$ebook->title}}">
                         <p class="col-xs-12" style="padding-left:0px; margin-top:10px;">
                             <a href="#" class="btn-delete btn btn-danger"  data-horse="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
                         </p>
                     </div>
                     <hr>
-                    <?php $i++; ?>
                     @endforeach
                 @else
                     <p>Not images found. Please add a new image.</p>  
                 @endif      
             </div>
+        </div>
+        <!-- /.row -->
         </div>
         <!-- /.row -->
 

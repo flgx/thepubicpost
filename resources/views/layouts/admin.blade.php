@@ -111,8 +111,12 @@
     <script src="{{ asset('dist/js/demo.js')}}"></script>
     <script src="{{ asset('dist/js/trumbowyg.min.js')}}"></script>
     <script src="{{ asset('dist/js/chosen.jquery.min.js')}}"></script>
+
+    <script src="{{ asset('dist/js/jquery.tablesorter.js')}}"></script>
+    <script src="{{ asset('dist/js/jquery.tablesorter.js')}}"></script>
     <script>
         $('#flash-overlay-modal').modal();
+        $("#myTable").tablesorter(); 
     </script>
     @yield('js')
     <script>

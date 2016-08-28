@@ -38,22 +38,22 @@ class CreateTagsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('photopost_tag',function(Blueprint $table){
+        Schema::create('photo_post_tag',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('photopost_id')->unsigned();
+            $table->integer('photo_post_id')->unsigned();
             $table->integer('tag_id')->unsigned();
 
-            $table->foreign('photopost_id')->references('id')->on('photo_posts')->onDelete('cascade');
+            $table->foreign('photo_post_id')->references('id')->on('photoposts')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->timestamps();
         });
 
-        Schema::create('videopost_tag',function(Blueprint $table){
+        Schema::create('tag_video_post',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('videopost_id')->unsigned();
+            $table->integer('video_post_id')->unsigned();
             $table->integer('tag_id')->unsigned();
 
-            $table->foreign('videopost_id')->references('id')->on('video_posts')->onDelete('cascade');
+            $table->foreign('video_post_id')->references('id')->on('videoposts')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->timestamps();
         });
@@ -67,8 +67,8 @@ class CreateTagsTable extends Migration
     public function down()
     {
         Schema::drop('post_tag');
-        Schema::drop('videopost_tag');
-        Schema::drop('photopost_tag');
+        Schema::drop('tag_video_post');
+        Schema::drop('photo_post_tag');
         Schema::drop('ebook_tag');
         Schema::drop('tags');
     }

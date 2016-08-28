@@ -21,7 +21,7 @@ class PostsController extends Controller
      */
     public function index(Request $request)
     {
-        $posts= Post::Search($request->title)->orderBy('id','DESC')->paginate(5);
+        $posts= Post::Search($request->title)->orderBy('id','DESC')->where('user_id',Auth::user()->id)->paginate(5);
         $posts->each(function($posts){
             $posts->category;
             $posts->images;
@@ -64,17 +64,14 @@ class PostsController extends Controller
         $category = Category::find($request['category_id']);
         $post->category()->associate($category);
         $post->save();  
-
         //associate all tags for the post
         $post->tags()->sync($request->tags);
-        $picture = '';
-
-      
+        $picture = '';      
         //Process Form Images
         if ($request->hasFile('images')) {
             $files = $request->file('images');
             foreach($files as $file){
-                //image data
+                //image  data
                 $filename = $file->getClientOriginalName();
                 $extension = $file->getClientOriginalExtension();
                 $picture = date('His').'_'.$filename;
@@ -104,7 +101,6 @@ class PostsController extends Controller
         Flash::success("Post <strong>".$post->title."</strong> was created.");
         return redirect()->route('admin.posts.index');
     }
-
     /**
      * Display the specified resource.
      *

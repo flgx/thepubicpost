@@ -11,7 +11,7 @@ class Post extends Model
     
     protected $table = 'posts';
 
-    protected $fillable = ['title','content','featured','featured_text','views','category_id','user_id','slug'];
+    protected $fillable = ['title','content','featured','status','featured_text','views','category_id','user_id','slug'];
 
     public function sluggable()
     {

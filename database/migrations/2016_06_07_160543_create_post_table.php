@@ -20,6 +20,7 @@ class CreatePostTable extends Migration
             $table->string('featured_text');
             $table->string('views');
             $table->string('slug');
+            $table->enum('status',['approved','suspended']);
             $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned();
 

@@ -9,10 +9,10 @@
         @if(Auth::user()->profile_image && Auth::user()->facebook_id == 'null')
         
           <img src="{{asset('img/users/profile').'/profile_'.Auth::user()->profile_image}}" class="img-circle" alt="The Post Page ">
-        @elseif(Auth::user()->facebook_id != 'null')          
+        @elseif(Auth::user()->facebook_id != 'null' && Auth::user()->profile_image )          
           <img src="{{Auth::user()->profile_image}}" class="img-circle" alt="The Post Page ">
         @else
-         <img src="asset('img/profile.png')" class="img-circle" alt="The Post Page ">
+         <img src="{{asset('img/profile.png')}}" class="img-circle" alt="The Post Page ">
         @endif
         </div>
         

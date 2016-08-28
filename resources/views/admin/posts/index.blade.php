@@ -25,6 +25,7 @@
 					</thead>
 					<tbody>
 						@foreach($posts as $post)
+							@if(Auth::user()->type == 'admin')
 							<tr>
 								<td>{{$post->id}}</td>
 								<td>{{$post->title}}</td>

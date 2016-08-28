@@ -15,13 +15,21 @@ use Config;
 class EbooksController extends Controller
 {
     /**
+     * Give me ebooks order by id DESC.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    /**
+
+    
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->paginate(5);
+        $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->paginate(2);
+        $sortType = 'desc';
         $ebooks->each(function($ebooks){
             $ebooks->category;
             $ebooks->images;
@@ -29,7 +37,7 @@ class EbooksController extends Controller
             $ebooks->user;
         });
         return view('admin.ebooks.index')
-        ->with('ebooks',$ebooks);
+        ->with('ebooks',$ebooks)->with('sortType',$sortType);
     }
 
     /**
@@ -76,6 +84,7 @@ class EbooksController extends Controller
         if ($request->hasFile('images')) {
             $files = $request->file('images');
             foreach($files as $file){
+
                 //image data
                 $filename = $file->getClientOriginalName();
                 $extension = $file->getClientOriginalExtension();
@@ -86,7 +95,8 @@ class EbooksController extends Controller
                 $image->resize(1300, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
-                $image->save($destinationPath.'slider_'.$picture);
+                $image->save($destinationPath.'ebook_'.$picture);
+                
                 //make images thumbnails
                 $image2=\Image::make($file->getRealPath()); //Call immage library installed.
                 $thumbPath = public_path().'/img/ebooks/thumbs/';
@@ -172,7 +182,31 @@ class EbooksController extends Controller
         if(Auth::user()->type == 'admin'){
             $ebook = Ebook::find($id);
             $ebook->delete();
-            Flash::error("Ebook <strong>".$ebook->name."</strong> was deleted.");
+            Flash::error("Ebook <strong>".$ebook->title."</strong> was deleted.");
+            return redirect()->route('admin.ebooks.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    public function approve($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $ebook = Ebook::find($id);
+            $ebook->status='approved';
+            $ebook->save();
+            Flash::success("Ebook <strong>".$ebook->title."</strong> was approved.");
+            return redirect()->route('admin.ebooks.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    public function suspend($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $ebook = Ebook::find($id);
+            $ebook->status='suspended';
+            $ebook->save();
+            Flash::warning("Ebook <strong>".$ebook->title."</strong> was suspended.");
             return redirect()->route('admin.ebooks.index');            
         }else{
             return redirect()->route('admin.dashboard.index');

@@ -11,8 +11,20 @@ class Tag extends Model
     protected $fillable = ['name'];
 
     public function posts(){
-    	
-    	return $this->belongsToMany('App\Post')->withTimestamps();
+        
+        return $this->belongsToMany('App\Post')->withTimestamps();
+    }
+    public function photoposts(){
+        
+        return $this->belongsToMany('App\PhotoPost')->withTimestamps();
+    }
+    public function ebooks(){
+        
+        return $this->belongsToMany('App\Ebook')->withTimestamps();
+    }
+    public function videoposts(){
+        
+        return $this->belongsToMany('App\VideoPost')->withTimestamps();
     }
 
     public function scopeSearch($query, $name){

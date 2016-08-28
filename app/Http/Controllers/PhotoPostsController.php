@@ -65,13 +65,12 @@ class PhotoPostsController extends Controller
        //associate category with photopost
         $category = Category::find($request['category_id']);
         $photopost->category()->associate($category);
-        $photopost->save();  
+        $photopost->save();
 
         //associate all tags for the photopost
         $photopost->tags()->sync($request->tags);
-        $picture = '';
-
-      
+    
+        $picture = '';      
         //Process Form Images
         if ($request->hasFile('images')) {
             $files = $request->file('images');
@@ -100,9 +99,8 @@ class PhotoPostsController extends Controller
                 $imageDb->photopost()->associate($photopost);
                 $imageDb->save();
             }
-        }else{
-            return redirect()->back();
         }
+
         Flash::success("PhotoPost <strong>".$photopost->title."</strong> was created.");
         return redirect()->route('admin.photoposts.index');
     }
@@ -172,11 +170,35 @@ class PhotoPostsController extends Controller
         if(Auth::user()->type == 'admin'){
             $photopost = PhotoPost::find($id);
             $photopost->delete();
-            Flash::error("PhotoPost <strong>".$photopost->name."</strong> was deleted.");
+            Flash::error("PhotoPost <strong>".$photopost->title."</strong> was deleted.");
             return redirect()->route('admin.photoposts.index');            
         }else{
             return redirect()->route('admin.dashboard.index');
         }
 
+    }
+    public function approve($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $photopost = Photopost::find($id);
+            $photopost->status='approved';
+            $photopost->save();
+            Flash::success("Photopost <strong>".$photopost->title."</strong> was approved.");
+            return redirect()->route('admin.photoposts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    public function suspend($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $photopost = Photopost::find($id);
+            $photopost->status='suspended';
+            $photopost->save();
+            Flash::warning("Photopost <strong>".$photopost->title."</strong> was suspended.");
+            return redirect()->route('admin.photoposts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
     }
 }

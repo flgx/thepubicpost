@@ -11,7 +11,7 @@ class Ebook extends Model
     
     protected $table = "ebooks";
 
-    protected $fillable = ['title','ebook_link','content','views','featured','category_id','user_id','slug'];
+    protected $fillable = ['title','ebook_link','content','status','views','featured','category_id','user_id','slug'];
 
     public function sluggable()
     {

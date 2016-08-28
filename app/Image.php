@@ -16,11 +16,15 @@ class Image extends Model
     }   
     public function postvideo(){
     	
-    	return $this->belongsTo('App\PostVideo');
+    	return $this->belongsTo('App\VideoPost');
     }   
     public function postphoto(){
+        
+        return $this->belongsTo('App\PhotoPost');
+    } 
+    public function ebook(){
     	
-    	return $this->belongsTo('App\PostPhoto');
+    	return $this->belongsTo('App\Ebook');
     }
     public function user(){
         return $this->belongsTo('App\User');
