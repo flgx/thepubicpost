@@ -43,6 +43,7 @@ class SocialAuth2Controller extends Controller
         $user->getName();
         $user->getEmail();
         $user->getAvatar();
+        
         $my_user = User::where('email','=', $user->getEmail())->first();
 	    if($my_user === null) {
 		    $newUser = new User();

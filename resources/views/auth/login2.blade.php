@@ -10,54 +10,41 @@
     <meta name="author" content="">
     <title>The Public Post | Login</title>
     <!-- Bootstrap Core CSS -->
-    <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('dist/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/login.css')}}" rel="stylesheet">
-    <link href="{{asset('dist/icons/style.css')}}" rel="stylesheet">
+    <link href="{{asset('icons/style.css')}}" rel="stylesheet">
 </head>
 
 <body>
         <div class="col-lg-12">
-            <div class="centrar" style="position:absolute; height:600px;width:500px;top:50%;left:50%;margin-left: -250px;margin-top:25px">
+            <div class="centrar" style="position:absolute; height:600px;width:500px;top:50%;left:50%;margin-left: -250px;margin-top:100px">
                 <div class="logo center-block" style="background-color:#f0f0f0;border-top:3px solid #0054a6;height:125px; width:100%">
-                    <img class="center-block img-response" src="{{asset('img/Logo_footer.png')}}" alt="" style="margin-top: 30px;">
+                    <img class="center-block img-response" src="{{asset('images/Logo_footer.png')}}" alt="" style="margin-top: 30px;">
                 </div>
                 <div class="cuerpo" style="width:100%;padding:15px;background-color:#fff">
                     <p style="color:#979696">Sign in to The Public Post through your email address or continue with
                     Twitter or Facebook.</p>
-                    <form  role="form" method="POST" action="{{ url('/login') }}">
-                        {{ csrf_field() }}
-                        <input id="email" placeholder="Type your email" type="email" class="form-control" name="email" value="{{ old('email') }}" style="width: 100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <input id="password" placeholder="Type Your Password" type="password" class="form-control" name="password" style="width:100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
-                                    @if ($errors->has('password'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
-                                    @endif
-                        </div>      
-                   
-                        
-                        <div class="col-lg-12 enlaces" style="margin:10px 0px;padding:0">
-                        <button type="submit" id="login" class="active" style="border:0px;background-color:transparent;margin-right: 20px;color:#939393;text-decoration:none">
-                             Login
-                        </button>
+                    <form action="">
+                    <input placeholder="Your email address or user name" type="text" style="width: 100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
+                    <input placeholder="Password" type="password" style="width: 100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
                     </form>
-                    <a href="{{ url('/password/reset') }}" id="forget" style="margin-right: 20px;color:#939393;text-decoration:none">Forget Password?</a>
-                    <a href="{{ url('/register') }}" id="new" style="margin-right: 20px;color:#939393;text-decoration:none">New here?</a>
+                    <div class="col-lg-12 enlaces" style="margin:10px 0px;padding:0">
+                    <a href="#" id="login" class="active" style="margin-right: 20px;color:#939393;text-decoration:none">Login</a>
+                    <a href="#" id="forget" style="margin-right: 20px;color:#939393;text-decoration:none">Forget Password?</a>
+                    <a href="#" id="new" style="margin-right: 20px;color:#939393;text-decoration:none">New here?</a>
                     </div>
                         <a href="#" class="button twitter" style="text-decoration:none;color:white!important">
                             <span class="icon icon-twitter"></span>Continue with Twitter
                             <p style="color:#c4daf4">We won't post without asking</p>
                         </a>                        
-                        <a href="{{ url('/auth/facebook') }}" class="button facebook" style="text-decoration:none;color:white!important">
+                        <a href="#" class="button facebook" style="text-decoration:none;color:white!important">
                             <span class="icon icon-facebook"></span>Continue with Facebook
                             <p style="color:#c4daf4">We won't post without asking</p>
                         </a>
                         <p style="color:#b2afaf;margin-top:10px;font-weight:bold">We will never post to Twitter or Facebook without your permission.
                         For more info, please see FAQ.</p>
-                     </div>
                 </div>
             </div>
         </div>
