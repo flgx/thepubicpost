@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title','All Ebooks')
+@section('title','My Ebooks')
 
 @section('content')
         <div class="row">
@@ -31,14 +31,14 @@
 								<td>{{$ebook->category->name}}</td>
 								<td>{{$ebook->user->name}}</td>
 								<td>
-									@if($ebook->status == 'approved')
+									@if($ebook->status == 'approved' && Auth::user()->type=='admin')
 									<a href="#" onclick="return confirm('This posts is already approved.');" class="btn btn-success" disabled="disabled">Approve</a>
-									@else
-										<a href="{{route('admin.ebooks.approve',$ebook->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-success">Approve</a>	
+									@elseif(Auth::user()->type == 'admin')
+										<a href="{{route('admin.ebooks.approve',$ebook->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-success">Approve</a>
 									@endif
-									@if($ebook->status == 'suspended')
+									@if($ebook->status == 'suspended' && Auth::user()->type=='admin')
 									<a href="{{route('admin.ebooks.suspend',$ebook->id)}}" onclick="return confirm('This posts is already suspended.');" disabled="disabled" class="btn btn-primary">Suspend</a>
-									@else									
+									@elseif(Auth::user()->type == 'admin')									
 									<a href="{{route('admin.ebooks.suspend',$ebook->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-primary">Suspend</a>
 									@endif
 									<a href="{{route('admin.ebooks.edit',$ebook->id)}}" class="btn btn-warning">Edit</a>

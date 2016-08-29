@@ -54,7 +54,7 @@
                     <div class="col-xs-12">
                         <img src="{{asset('img/ebooks/thumbs').'/thumb_'.$image->name, '$ebook->title'}}" alt="The Public Ebook {{$ebook->title}}">
                         <p class="col-xs-12" style="padding-left:0px; margin-top:10px;">
-                            <a href="#" class="btn-delete btn btn-danger"  data-horse="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
+                            <a href="#" class="btn-delete btn btn-danger"  data-ebook="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
                         </p>
                     </div>
                     <hr>
@@ -72,6 +72,23 @@
 @endsection
 
 @section('js')
+    <script>
+    $('.btn-delete').on('click', function(e) {
+        var myThis = $(this).parent().parent();
+        var dataId = $(this).data('ebook');
+
+        $.ajax({
+            url: '{{ url('/admin/images/destroyImage') }}' + '/' + dataId,
+            type: 'DELETE',
+            data:{_token:token,id:dataId},
+            success: function(msg) {
+                console.log(msg['msg']);
+                
+                $(myThis).fadeOut(150);
+            }
+        });
+    });
+    </script>
     <script>
         $(".select-tag").chosen({
             placeholder_text_multiple: "Select your tags"

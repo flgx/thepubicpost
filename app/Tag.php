@@ -14,17 +14,17 @@ class Tag extends Model
         
         return $this->belongsToMany('App\Post')->withTimestamps();
     }
-    public function photoposts(){
+    public function photos(){
         
-        return $this->belongsToMany('App\PhotoPost')->withTimestamps();
+        return $this->belongsToMany('App\Photo')->withTimestamps();
     }
     public function ebooks(){
         
         return $this->belongsToMany('App\Ebook')->withTimestamps();
     }
-    public function videoposts(){
+    public function videos(){
         
-        return $this->belongsToMany('App\VideoPost')->withTimestamps();
+        return $this->belongsToMany('App\Videot')->withTimestamps();
     }
 
     public function scopeSearch($query, $name){

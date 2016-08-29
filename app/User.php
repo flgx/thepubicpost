@@ -27,13 +27,13 @@ class User extends Authenticatable
         
         return $this->hasMany('App\Post');
     }
-    public function photoposts(){
+    public function photos(){
         
-        return $this->hasMany('App\PhotoPost');
+        return $this->hasMany('App\Photo');
     }
-    public function videoposts(){
+    public function videos(){
         
-        return $this->hasMany('App\VideoPost');
+        return $this->hasMany('App\Video');
     }
 
     public function images(){

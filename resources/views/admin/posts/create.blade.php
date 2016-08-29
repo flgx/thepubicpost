@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group">
                         {!! Form::label('featured','Mark as Featured') !!}
-                        {!! Form::checkbox('featured', 'null', false) !!}
+                        {!! Form::checkbox('featured', 'true', false) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}

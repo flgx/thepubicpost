@@ -8,19 +8,19 @@ class Image extends Model
 {
     protected $table = 'images';
 
-    protected $fillable = ['name','post_id','ebook_id','videopost_id','photopost_id'];
+    protected $fillable = ['name','post_id','ebook_id','video_id','photo_id'];
 
     public function post(){
     	
     	return $this->belongsTo('App\Post');
     }   
-    public function postvideo(){
+    public function video(){
     	
-    	return $this->belongsTo('App\VideoPost');
+    	return $this->belongsTo('App\Video');
     }   
-    public function postphoto(){
+    public function photo(){
         
-        return $this->belongsTo('App\PhotoPost');
+        return $this->belongsTo('App\Photo');
     } 
     public function ebook(){
     	

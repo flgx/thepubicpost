@@ -31,7 +31,18 @@ class ImagesController extends Controller
             return redirect()->route('admin.dashboard.index');
         }
 
-
+    }
+    public function destroyImage(Request $request,$id)
+    {
+        $image = Image::find($id);
+        $myimage = "img/posts/slider_".$image->name;
+        $myimageThumb = "img/posts/thumbs/thumb_".$image->name;
+        \File::delete([
+            $myimage,
+            $myimageThumb
+        ]);
+        $image->delete();
+        return response()->json(['msg'=>'success']);
     }
 
 }

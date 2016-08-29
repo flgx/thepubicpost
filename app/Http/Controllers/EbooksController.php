@@ -28,7 +28,7 @@ class EbooksController extends Controller
      */
     public function index(Request $request)
     {
-        $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->paginate(2);
+        $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->where('user_id',Auth::user()->id)->paginate(2);
         $sortType = 'desc';
         $ebooks->each(function($ebooks){
             $ebooks->category;
@@ -37,6 +37,19 @@ class EbooksController extends Controller
             $ebooks->user;
         });
         return view('admin.ebooks.index')
+        ->with('ebooks',$ebooks)->with('sortType',$sortType);
+    }
+    public function all(Request $request)
+    {
+        $ebooks= Ebook::Search($request->title)->orderBy('id','DESC')->paginate(2);
+        $sortType = 'desc';
+        $ebooks->each(function($ebooks){
+            $ebooks->category;
+            $ebooks->images;
+            $ebooks->tags;
+            $ebooks->user;
+        });
+        return view('admin.ebooks.all')
         ->with('ebooks',$ebooks)->with('sortType',$sortType);
     }
 

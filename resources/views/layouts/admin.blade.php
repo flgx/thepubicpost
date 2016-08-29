@@ -116,7 +116,8 @@
     <script src="{{ asset('dist/js/jquery.tablesorter.js')}}"></script>
     <script>
         $('#flash-overlay-modal').modal();
-        $("#myTable").tablesorter(); 
+        $("#myTable").tablesorter();
+        var token = $('meta[name="csrf-token"]').attr('content');
     </script>
     @yield('js')
     <script>

@@ -31,6 +31,18 @@ class PostsController extends Controller
         return view('admin.posts.index')
         ->with('posts',$posts);
     }
+    public function all(Request $request)
+    {
+        $posts= Post::Search($request->title)->orderBy('id','DESC')->paginate(5);
+        $posts->each(function($posts){
+            $posts->category;
+            $posts->images;
+            $posts->tags;
+            $posts->user;
+        });
+        return view('admin.posts.all')
+        ->with('posts',$posts);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -167,6 +179,31 @@ class PostsController extends Controller
             $post = Post::find($id);
             $post->delete();
             Flash::error("Post <strong>".$post->name."</strong> was deleted.");
+            return redirect()->route('admin.posts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    
+    public function approve($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $post = Post::find($id);
+            $post->status='approved';
+            $post->save();
+            Flash::success("Post <strong>".$post->title."</strong> was approved.");
+            return redirect()->route('admin.posts.index');            
+        }else{
+            return redirect()->route('admin.dashboard.index');
+        }
+    }
+    public function suspend($id)
+    {
+        if(Auth::user()->type == 'admin'){
+            $post = Post::find($id);
+            $post->status='suspended';
+            $post->save();
+            Flash::warning("Post <strong>".$post->title."</strong> was suspended.");
             return redirect()->route('admin.posts.index');            
         }else{
             return redirect()->route('admin.dashboard.index');

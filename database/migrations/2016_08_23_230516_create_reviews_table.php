@@ -18,15 +18,15 @@ class CreateReviewsTable extends Migration
             $table->integer('rate')->default(0);
             $table->integer('user_id')->unsigned();
             $table->integer('post_id')->unsigned();
-            $table->integer('video_post_id')->unsigned();
-            $table->integer('photo_post_id')->unsigned();
+            $table->integer('video_id')->unsigned();
+            $table->integer('photo_id')->unsigned();
             $table->integer('ebook_id')->unsigned();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->foreign('ebook_id')->references('id')->on('ebooks')->onDelete('cascade');
-            $table->foreign('photo_post_id')->references('id')->on('photoposts')->onDelete('cascade');
-            $table->foreign('video_post_id')->references('id')->on('videoposts')->onDelete('cascade');            
+            $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');
+            $table->foreign('video_id')->references('id')->on('videos')->onDelete('cascade');            
             $table->timestamps();
         });
     }

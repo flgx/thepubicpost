@@ -54,14 +54,14 @@
                     <div class="col-xs-12">
                         <img src="{{asset('img/posts/thumbs').'/thumb_'.$image->name, '$post->title'}}" alt="The Public Post {{$post->title}}">
                         <p class="col-xs-12" style="padding-left:0px; margin-top:10px;">
-                            <a href="#" class="btn-delete btn btn-danger"  data-horse="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
+                            <a href="#" class="btn-delete btn btn-danger"  data-postid="{{$image->id}}"><i class="fa fa-trash fa-2x"></i></a>
                         </p>
                     </div>
                     <hr>
                     @endforeach
                 @else
                     <p>Not images found. Please add a new image.</p>  
-                @endif      
+                @endif       
             </div>
         </div>
         <!-- /.row -->
@@ -83,5 +83,23 @@
         $('.textarea-content').trumbowyg({
             
         });
+    </script>
+    <script>
+    $('.btn-delete').on('click', function(e) {
+        
+        var myThis = $(this).parent().parent();
+        var dataId = $(this).data('postid');
+
+        $.ajax({
+            url: '{{ url('/admin/images/destroyImage') }}' + '/' + dataId,
+            type: 'DELETE',
+            data:{_token:token,id:dataId},
+            success: function(msg) {
+                console.log(msg['msg']);
+                
+                $(myThis).fadeOut(150);
+            }
+        });
+    });
     </script>
 @endsection

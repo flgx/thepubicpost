@@ -38,22 +38,22 @@ class CreateTagsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('photo_post_tag',function(Blueprint $table){
+        Schema::create('photo_tag',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('photo_post_id')->unsigned();
+            $table->integer('photo_id')->unsigned();
             $table->integer('tag_id')->unsigned();
 
-            $table->foreign('photo_post_id')->references('id')->on('photoposts')->onDelete('cascade');
+            $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->timestamps();
         });
 
-        Schema::create('tag_video_post',function(Blueprint $table){
+        Schema::create('video_tag',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('video_post_id')->unsigned();
+            $table->integer('video_id')->unsigned();
             $table->integer('tag_id')->unsigned();
 
-            $table->foreign('video_post_id')->references('id')->on('videoposts')->onDelete('cascade');
+            $table->foreign('video_id')->references('id')->on('videos')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->timestamps();
         });
