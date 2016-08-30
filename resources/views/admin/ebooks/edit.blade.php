@@ -23,8 +23,12 @@
                         {!! Form::textarea('content', $ebook->content,['class' => 'textarea-content','required']) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('featured_text','Featured Text') !!}
-                        {!! Form::textarea('featured_text', $ebook->featured_text,['class' => 'textarea-content form-control','required']) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}
+                        @if($ebook->featured == 'true')
+                        {{ Form::checkbox('featured', 'true',true) }}
+                        @else
+                        {{ Form::checkbox('featured', 'true',false) }}
+                        @endif      
                     </div>
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}

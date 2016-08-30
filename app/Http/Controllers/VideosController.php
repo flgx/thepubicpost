@@ -72,17 +72,18 @@ class VideosController extends Controller
      */
     public function store(Request $request)
     {
-        $videpost = new Video($request->except('images','category_id','tags'));
-        $videpost->user_id = \Auth::user()->id;
-       //associate category with videpost
-        $category = Category::find($request['category_id']);
-        $videpost->category()->associate($category);
-        $videpost->save();  
+        $video = new Video($request->except('images','category_id','tags'));
 
-        //associate all tags for the videpost
-        $videpost->tags()->sync($request->tags);
+        $video->user_id = \Auth::user()->id;
+       //associate category with video
+        $category = Category::find($request['category_id']);
+        $video->category()->associate($category);
+        $video->save();  
+
+        //associate all tags for the video
+        $video->tags()->sync($request->tags);
         $picture = '';
-        Flash::success("Video <strong>".$videpost->title."</strong> was created.");
+        Flash::success("Video <strong>".$video->title."</strong> was created.");
         return redirect()->route('admin.videos.index');
     }
 
@@ -95,7 +96,7 @@ class VideosController extends Controller
     public function show($id)
     {
         $video = Video::find($id);
-        return view('admin.videos.show')->with('Video',$video);
+        return view('admin.videos.show')->with('video',$video);
     }
 
     /**
@@ -110,14 +111,10 @@ class VideosController extends Controller
             $video = Video::find($id);
             $categories = Category::orderBy('name','DESC')->lists('name','id');
             $tags = Tag::orderBy('name','DESC')->lists('name','id');
-            $images = new Image();
-            $video->images->each(function($video){
-                $video->images;
-            });
             $myTags = $video->tags->lists('id')->ToArray(); //give me a array with only the tags id.
             return View('admin.videos.edit')->with('video',$video)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
         }else{
-            return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.videos.index');
         }
 
     }
@@ -132,6 +129,11 @@ class VideosController extends Controller
     public function update(Request $request, $id)
     {
         $video =Video::find($id);
+        if($request->featured){
+            $video->featured = 'true';
+        }else{
+            $video->featured = 'false';
+        }
         $video->fill($request->all());
         $video->user_id = \Auth::user()->id;
         $video->save();
@@ -154,7 +156,7 @@ class VideosController extends Controller
             Flash::error("Video <strong>".$video->name."</strong> was deleted.");
             return redirect()->route('admin.videos.index');            
         }else{
-            return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.video.index');
         }
     }
 
@@ -167,7 +169,7 @@ class VideosController extends Controller
             Flash::success("Video <strong>".$video->title."</strong> was approved.");
             return redirect()->route('admin.videos.index');            
         }else{
-            return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.videos.index');
         }
     }
     public function suspend($id)
@@ -179,7 +181,7 @@ class VideosController extends Controller
             Flash::warning("Video <strong>".$video->title."</strong> was suspended.");
             return redirect()->route('admin.videos.index');            
         }else{
-            return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.videos.index');
         }
     }
 }

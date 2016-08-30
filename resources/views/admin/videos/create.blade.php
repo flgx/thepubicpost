@@ -6,7 +6,7 @@
 @section('content')
         <div class="row">
             <div class="col-lg-6 col-md-6">
-            	{!! Form::open(['route' => 'admin.videoposts.store','method' => 'POST','files'=>'true']) !!}
+            	{!! Form::open(['route' => 'admin.videos.store','method' => 'POST','files'=>'true']) !!}
 
                     <div class="form-group">
                         {!! Form::label('title','Title') !!}
@@ -28,8 +28,8 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('featured','Mark as Featured') !!}
-                        {!! Form::checkbox('featured', 'true', false) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}                        
+                        {{ Form::checkbox('featured', 'true') }}                         
                     </div>
 
                     <div class="form-group">

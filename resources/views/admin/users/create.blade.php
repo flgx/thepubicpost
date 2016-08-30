@@ -17,8 +17,8 @@
                         {!! Form::text('facebookid', null,['class'=> 'form-control','placeholder'=>'Type your Facebook ID','required']) !!}
                     </div>
             		<div class="form-group">
-            			{!! Form::label('googleid','Facebook') !!}
-            			{!! Form::text('googleid', null,['class'=> 'form-control','placeholder'=>'Type your Google ID','required']) !!}
+            			{!! Form::label('bkash','Bkash') !!}
+            			{!! Form::text('bkash', null,['class'=> 'form-control','placeholder'=>'Type your bkash ID','required']) !!}
             		</div>
                     @if(Auth::user()->type == 'admin')
                         <div class="form-group">

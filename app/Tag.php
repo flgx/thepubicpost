@@ -24,7 +24,7 @@ class Tag extends Model
     }
     public function videos(){
         
-        return $this->belongsToMany('App\Videot')->withTimestamps();
+        return $this->belongsToMany('App\Video')->withTimestamps();
     }
 
     public function scopeSearch($query, $name){

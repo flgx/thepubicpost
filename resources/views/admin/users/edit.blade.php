@@ -38,7 +38,11 @@
             			{!! Form::label('email','E-mail') !!}
             			{!! Form::email('email', $user->email,['class'=> 'form-control','placeholder'=>'youremail@gmail.com','required']) !!}
             		</div>
-
+                        
+                    <div class="form-group col-xs-12">
+                        {!! Form::label('bkash','Bkash') !!}
+                        {!! Form::text('bkash', $user->bkash,['class'=> 'form-control','placeholder'=>'Type your bkash ID','required']) !!}
+                    </div>
 
 
                     <div class="form-group">

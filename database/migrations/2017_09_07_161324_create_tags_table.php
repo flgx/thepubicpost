@@ -48,7 +48,7 @@ class CreateTagsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('video_tag',function(Blueprint $table){
+        Schema::create('tag_video',function(Blueprint $table){
             $table->increments('id');
             $table->integer('video_id')->unsigned();
             $table->integer('tag_id')->unsigned();
@@ -67,8 +67,8 @@ class CreateTagsTable extends Migration
     public function down()
     {
         Schema::drop('post_tag');
-        Schema::drop('tag_video_post');
-        Schema::drop('photo_post_tag');
+        Schema::drop('tag_video');
+        Schema::drop('photo_tag');
         Schema::drop('ebook_tag');
         Schema::drop('tags');
     }

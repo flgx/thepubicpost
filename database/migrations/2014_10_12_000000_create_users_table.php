@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('facebook_id');
             $table->string('profile_image');
             $table->string('google_id');
+            $table->string('bkash');
             $table->string('real_id');
             $table->string('password');
             $table->string('featured');

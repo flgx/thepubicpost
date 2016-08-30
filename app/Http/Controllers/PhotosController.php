@@ -174,6 +174,13 @@ class PhotosController extends Controller
     public function update(Request $request, $id)
     {
         $photo =Photo::find($id);
+
+        if($request->featured){
+            $photo->featured = 'true';
+        }else{
+            $photo->featured = 'false';
+        }
+        
         $photo->fill($request->all());
         $photo->user_id = \Auth::user()->id;
         $photo->save();
@@ -216,7 +223,7 @@ class PhotosController extends Controller
                 
             }
         }else{
-            return redirect('admin/photo');
+            return redirect('admin/photos');
         }      
         Flash::success("Photo <strong>".$photo->id."</strong> was updated.");
         return redirect()->back();

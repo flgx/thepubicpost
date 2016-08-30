@@ -144,7 +144,7 @@ class PostsController extends Controller
             $myTags = $post->tags->lists('id')->ToArray(); //give me a array with only the tags id.
             return View('admin.posts.edit')->with('post',$post)->with('categories',$categories)->with('tags',$tags)->with('myTags',$myTags);            
         }else{
-            return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.posts.index');
         }
 
     }
@@ -159,6 +159,11 @@ class PostsController extends Controller
     public function update(Request $request, $id)
     {
         $post =Post::find($id);
+        if($request->featured){
+            $post->featured = 'true';
+        }else{
+            $post->featured = 'false';
+        }
         $post->fill($request->all());
         $post->user_id = \Auth::user()->id;
         $post->save();

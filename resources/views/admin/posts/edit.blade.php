@@ -27,6 +27,14 @@
                         {!! Form::textarea('featured_text', $post->featured_text,['class' => 'textarea-content form-control','required']) !!}
                     </div>
                     <div class="form-group">
+                        {!! Form::label('featured','Mark as Featured') !!}
+                        @if($post->featured == 'true')
+                        {{ Form::checkbox('featured', 'true',true) }}
+                        @else
+                        {{ Form::checkbox('featured', 'true',false) }}
+                        @endif      
+                    </div>
+                    <div class="form-group">
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,$myTags,['class'=> 'form-control select-tag','multiple','required']) !!}
                     </div>

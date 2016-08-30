@@ -176,6 +176,11 @@ class EbooksController extends Controller
     public function update(Request $request, $id)
     {
         $ebook =Ebook::find($id);
+        if($request->featured){
+            $ebook->featured = 'true';
+        }else{
+            $ebook->featured = 'false';
+        }
         $ebook->fill($request->all());
         $ebook->user_id = \Auth::user()->id;
         $ebook->save();

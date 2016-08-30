@@ -116,10 +116,10 @@
           </a>
           <ul class="treeview-menu">
           @if(Auth::user()->type == 'admin')
-            <li class="{{ (Request::is('admin/ebooks/all') ? 'active' : '') }}"><a href="{{url('admin/ebooks/all')}}"><i class="fa fa-photo"></i> All Ebooks</a></li>
+            <li class="{{ (Request::is('admin/ebooks/all') ? 'active' : '') }}"><a href="{{url('admin/ebooks/all')}}"><i class="fa fa-book"></i> All Ebooks</a></li>
           @endif
-            <li class="{{ (Request::is('admin/ebook') ? 'active' : '') }}"><a href="{{url('admin/ebooks')}}"><i class="fa fa-photo"></i> View My Ebooks</a></li>
-            <li class="{{ (Request::is('admin/ebooks/create') ? 'active' : '') }}"><a href="{{url('admin/ebooks/create')}}"><i class="fa fa-photo"></i> Create Video Post</a></li>
+            <li class="{{ (Request::is('admin/ebook') ? 'active' : '') }}"><a href="{{url('admin/ebooks')}}"><i class="fa fa-book"></i> View My Ebooks</a></li>
+            <li class="{{ (Request::is('admin/ebooks/create') ? 'active' : '') }}"><a href="{{url('admin/ebooks/create')}}"><i class="fa fa-book"></i> Create Ebook</a></li>
           </ul>
         </li>
         @if(Auth::user()->type == 'admin')

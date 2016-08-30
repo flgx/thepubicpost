@@ -30,10 +30,6 @@ class Video extends Model
     	
     	return $this->belongsTo('App\User');
     } 
-    public function images(){
-    	
-    	return $this->hasMany('App\Image');
-    }  
     public function tags(){
     	
     	return $this->belongsToMany('App\Tag')->withTimestamps();

@@ -6,30 +6,33 @@
 @section('content')
         <div class="row">
             <div class="col-lg-6 col-md-6">
-                {!! Form::open(['route' => ['admin.videoposts.update',$videopost->id],'method' => 'PUT','files'=>'true']) !!}
+                {!! Form::open(['route' => ['admin.videos.update',$video->id],'method' => 'PUT','files'=>'true']) !!}
 
                     <div class="form-group">
                         {!! Form::label('title','Title') !!}
-                        {!! Form::text('title', $videopost->title,['class'=> 'form-control','placeholder'=>'Type a title','required']) !!}
+                        {!! Form::text('title', $video->title,['class'=> 'form-control','placeholder'=>'Type a title','required']) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::label('video_link','Video Link') !!}
-                        {!! Form::text('video_link', $videopost->video_link,['class'=> 'form-control','placeholder'=>'Type a video link','required']) !!}
+                        {!! Form::text('video_link', $video->video_link,['class'=> 'form-control','placeholder'=>'Type a video link','required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('category_id','Category') !!}
-                        {!! Form::select('category_id', $categories,$videopost->category->id,['class'=> 'form-control select-category','required']) !!}
+                        {!! Form::select('category_id', $categories,$video->category->id,['class'=> 'form-control select-category','required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('content','Content') !!}
-                        {!! Form::textarea('content', $videopost->content,['class' => 'textarea-content','required']) !!}
+                        {!! Form::textarea('content', $video->content,['class' => 'textarea-content','required']) !!}
                     </div>
-
                     <div class="form-group">
-                        {!! Form::label('featured','Featured') !!}
-                        {!! Form::checkbox('featured',$videopost->featured,['class' => 'form-control','required']) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}
+                        @if($video->featured == 'true')
+                        {{ Form::checkbox('featured', 'true',true) }}
+                        @else
+                        {{ Form::checkbox('featured', 'true',false) }}
+                        @endif      
                     </div>
 
                     <div class="form-group">

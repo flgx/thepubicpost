@@ -23,8 +23,12 @@
                         {!! Form::textarea('content', $photo->content,['class' => 'textarea-content','required']) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('featured','Featured') !!}
-                        {!! Form::checkbox('featured',$photo->featured,['class' => 'form-control','required']) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}
+                        @if($photo->featured == 'true')
+                        {{ Form::checkbox('featured', 'true',true) }}
+                        @else
+                        {{ Form::checkbox('featured', 'true',false) }}
+                        @endif      
                     </div>
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}

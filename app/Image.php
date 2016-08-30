@@ -13,11 +13,7 @@ class Image extends Model
     public function post(){
     	
     	return $this->belongsTo('App\Post');
-    }   
-    public function video(){
-    	
-    	return $this->belongsTo('App\Video');
-    }   
+    }
     public function photo(){
         
         return $this->belongsTo('App\Photo');

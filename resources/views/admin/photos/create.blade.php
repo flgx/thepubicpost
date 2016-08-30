@@ -29,9 +29,10 @@
                     </div>
                     
                     <div class="form-group">
-                        {!! Form::label('featured','Mark as Featured') !!}
-                        {!! Form::checkbox('featured', 'true', false) !!}
+                        {!! Form::label('featured','Mark as Featured') !!}                        
+                        {{ Form::checkbox('featured', 'true') }}                         
                     </div>
+
                     <div class="form-group">
                         {!! Form::label('tags','Tags') !!}
                         {!! Form::select('tags[]', $tags,null,['class'=> 'form-control select-tag','multiple','required']) !!}

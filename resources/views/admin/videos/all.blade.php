@@ -4,8 +4,8 @@
 @section('content')
         <div class="row">
             <div class="col-lg-12 col-md-6">
-            	<a href="{{ route('admin.videoposts.create')}}" class="btn btn-info"> Create New VideoPost</a>
-            	{!!Form::open(['route'=>'admin.videoposts.index','method'=>'GET','class'=>'navbar-form pull-right'])!!}
+            	<a href="{{ route('admin.videos.create')}}" class="btn btn-info"> Create New VideoPost</a>
+            	{!!Form::open(['route'=>'admin.videos.index','method'=>'GET','class'=>'navbar-form pull-right'])!!}
             		<div class="input-group">
             			{!!Form::text('title',null,['class'=>'form-control','placeholder'=>'Search VideoPost','aria-describedby'=>'search'])!!}
             			<span class="input-group-addon" id="search">
@@ -24,31 +24,31 @@
 						<th>Action</th>
 					</thead>
 					<tbody>
-						@foreach($videoposts as $videopost)
+						@foreach($videos as $video)
 							<tr>
-								<td>{{$videopost->id}}</td>
-								<td>{{$videopost->title}}</td>
-								<td>{{$videopost->category->name}}</td>
-								<td>{{$videopost->user->name}}</td>
+								<td>{{$video->id}}</td>
+								<td>{{$video->title}}</td>
+								<td>{{$video->category->name}}</td>
+								<td>{{$video->user->name}}</td>
 								<td>
-									@if($videopost->status == 'approved' && Auth::user()->type=='admin')
+									@if($video->status == 'approved' && Auth::user()->type=='admin')
 									<a href="#" onclick="return confirm('This posts is already approved.');" class="btn btn-success" disabled="disabled">Approve</a>
 									@elseif(Auth::user()->type == 'admin')
-										<a href="{{route('admin.videoposts.approve',$videopost->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-success">Approve</a>
+										<a href="{{route('admin.videos.approve',$video->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-success">Approve</a>
 									@endif
-									@if($videopost->status == 'suspended' && Auth::user()->type=='admin')
-									<a href="{{route('admin.videoposts.suspend',$videopost->id)}}" onclick="return confirm('This posts is already suspended.');" disabled="disabled" class="btn btn-primary">Suspend</a>
+									@if($video->status == 'suspended' && Auth::user()->type=='admin')
+									<a href="{{route('admin.videos.suspend',$video->id)}}" onclick="return confirm('This posts is already suspended.');" disabled="disabled" class="btn btn-primary">Suspend</a>
 									@elseif(Auth::user()->type == 'admin')									
-									<a href="{{route('admin.videoposts.suspend',$videopost->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-primary">Suspend</a>
+									<a href="{{route('admin.videos.suspend',$video->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-primary">Suspend</a>
 									@endif
-									<a href="{{route('admin.videoposts.edit',$videopost->id)}}" class="btn btn-warning">Edit</a>
-								   <a href="{{route('admin.videoposts.destroy',$videopost->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-danger">Delete</a> </td>
+									<a href="{{route('admin.videos.edit',$video->id)}}" class="btn btn-warning">Edit</a>
+								   <a href="{{route('admin.videos.destroy',$video->id)}}" onclick="return confirm('Are you sure?');" class="btn btn-danger">Delete</a> </td>
 							</tr>
 						@endforeach
 					</tbody>
 				</table>
 				<div class="text-center">
-					{!! $videoposts->render() !!}
+					{!! $videos->render() !!}
 				</div>
 				
             </div>
