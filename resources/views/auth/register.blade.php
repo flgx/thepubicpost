@@ -34,6 +34,12 @@
                                     <strong>{{ $errors->first('name') }}</strong>
                                 </span>
                             @endif
+                        <input id="bkash" type="text" class="form-control" placeholder="Type your bkash" name="bkash" value="{{ old('bkash') }}">
+                            @if ($errors->has('bkash'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('bkash') }}</strong>
+                                </span>
+                            @endif
                         <input id="email" type="email" class="form-control" placeholder="Type your email" name="email" value="{{ old('email') }}" style="width: 100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                             <input id="password" type="password" placeholder="Type your password" class="form-control" name="password" style="width:100%; padding: 10px; border: 1px solid rgb(217, 217, 217); margin: 5px 0px;">
