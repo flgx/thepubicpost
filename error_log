@@ -1,0 +1,2 @@
+[04-Sep-2016 13:48:55 UTC] PHP Fatal error:  Call to undefined function Intervention\Image\finfo_buffer() in /home/publicpost/public_html/beta2/local/vendor/intervention/image/src/Intervention/Image/AbstractDecoder.php on line 193
+[04-Sep-2016 15:07:02 UTC] PHP Fatal error:  Call to a member function each() on null in /home/publicpost/public_html/beta2/local/app/Http/Controllers/VideosController.php on line 150
