@@ -469,7 +469,7 @@ class PhotosController extends Controller
             $photo = Photo::find($id);
             $photo->delete();
             Flash::error("Photo <strong>".$photo->name."</strong> was deleted.");
-            return redirect()->route('admin.photos.index');
+            return redirect()->back();
         }else{
             Flash::error("You don't have permissions to do that.");
             return redirect()->route('admin.photos.index');

@@ -410,7 +410,7 @@ class EbooksController extends Controller
             $ebook = Ebook::find($id);
             $ebook->delete();
             Flash::error("Ebook <strong>".$ebook->name."</strong> was deleted.");
-            return redirect()->route('admin.ebooks.index');
+            return redirect()->back();
         }else{
             Flash::error("You don't have permissions to do that.");
             return redirect()->route('admin.ebooks.index');

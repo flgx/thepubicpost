@@ -416,7 +416,7 @@ class PostsController extends Controller
             $post = Post::find($id);
             $post->delete();
             Flash::error("Post <strong>".$post->name."</strong> was deleted.");
-            return redirect()->route('admin.posts.index');
+            return redirect()->back();
         }else{
             Flash::error("You don't have permissions to do that.");
             return redirect()->route('admin.posts.index');

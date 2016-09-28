@@ -422,7 +422,7 @@ class VideosController extends Controller
         \File::delete($myvideo);
             $video->delete();
             Flash::error("Video <strong>".$video->name."</strong> was deleted.");
-            return redirect()->route('admin.videos.index');
+            return redirect()->back();
         }else{
             Flash::error("You don't have permissions to do that.");
             return redirect()->route('admin.videos.index');
